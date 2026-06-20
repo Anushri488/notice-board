@@ -1,0 +1,74 @@
+import { useRouter } from "next/router";
+import { useState } from "react";
+import Layout from "../../../components/Layout";
+import NoticeForm from "../../../components/NoticeForm";
+import prisma from "../../../lib/prisma";
+import styles from "../../../styles/FormPage.module.css";
+
+export async function getServerSideProps({ params }) {
+  const id = Number(params.id);
+  if (!Number.isInteger(id) || id <= 0) {
+    return { notFound: true };
+  }
+
+  const notice = await prisma.notice.findUnique({ where: { id } });
+  if (!notice) {
+    return { notFound: true };
+  }
+
+  return {
+    props: {
+      notice: {
+      ...notice,
+      publishDate: notice.publishDate.toISOString(),
+      createdAt: notice.createdAt.toISOString(),
+      updatedAt: notice.updatedAt.toISOString(),
+      },
+    },
+  };
+}
+
+export default function EditNotice({ notice }) {
+  const router = useRouter();
+  const [submitting, setSubmitting] = useState(false);
+  const [serverErrors, setServerErrors] = useState({});
+  const [generalError, setGeneralError] = useState("");
+
+  async function handleSubmit(values) {
+    setSubmitting(true);
+    setServerErrors({});
+    setGeneralError("");
+    try {
+      const res = await fetch(`/api/notices/${notice.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setServerErrors(data.fields || {});
+        setGeneralError(data.fields ? "" : data.error || "Something went wrong.");
+        return;
+      }
+      router.push("/");
+    } catch (err) {
+      setGeneralError("Network error — please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <Layout>
+      <h1 className={styles.title}>Edit notice</h1>
+      {generalError && <p className={styles.generalError}>{generalError}</p>}
+      <NoticeForm
+        initialValues={notice}
+        submitLabel="Save changes"
+        submitting={submitting}
+        serverErrors={serverErrors}
+        onSubmit={handleSubmit}
+      />
+    </Layout>
+  );
+}

@@ -1,0 +1,14 @@
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 18px;
+}
+
+.generalError {
+  background: var(--color-urgent-bg);
+  color: var(--color-urgent);
+  border-radius: 7px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+  max-width: 640px;
+}
