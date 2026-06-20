@@ -1,0 +1,121 @@
+.form {
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius);
+  padding: 28px;
+  max-width: 640px;
+}
+
+.field {
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.row {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--color-ink);
+}
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  border: 1px solid var(--color-hairline);
+  border-radius: 7px;
+  padding: 9px 12px;
+  font-size: 0.92rem;
+  color: var(--color-ink);
+  background: #fff;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  border-color: var(--color-event);
+}
+
+.textarea {
+  resize: vertical;
+  font-family: var(--font-body);
+}
+
+.error {
+  color: var(--color-urgent);
+  font-size: 0.78rem;
+  margin: 6px 0 0;
+}
+
+.priorityToggle {
+  display: flex;
+  border: 1px solid var(--color-hairline);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.priorityOption {
+  flex: 1;
+  background: #fff;
+  border: none;
+  padding: 9px 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--color-slate);
+}
+
+.priorityOption + .priorityOption {
+  border-left: 1px solid var(--color-hairline);
+}
+
+.priorityOptionActive {
+  background: var(--color-event-bg);
+  color: var(--color-event);
+}
+
+.priorityOptionUrgent.priorityOptionActive {
+  background: var(--color-urgent-bg);
+  color: var(--color-urgent);
+}
+
+.formActions {
+  margin-top: 8px;
+}
+
+.submitButton {
+  background: var(--color-ink);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 11px 24px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.submitButton:not(:disabled):hover {
+  background: #233052;
+}
+
+@media (max-width: 480px) {
+  .form {
+    padding: 20px;
+  }
+  .row {
+    flex-direction: column;
+    gap: 0;
+  }
+}

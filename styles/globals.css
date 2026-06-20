@@ -1,0 +1,89 @@
+/* ---------------------------------------------------------------------
+   Design tokens
+   A notice board reads like a registry: clear categories, a stamped
+   sense of date/meta, and one unmistakable signal for "Urgent".
+--------------------------------------------------------------------- */
+:root {
+  /* surfaces */
+  --color-bg: #f4f6f8;
+  --color-surface: #ffffff;
+  --color-hairline: #d7dee5;
+
+  /* text */
+  --color-ink: #14213d;
+  --color-slate: #5c6b7a;
+
+  /* signal colors */
+  --color-urgent: #d7263d;
+  --color-urgent-bg: #fdecee;
+  --color-exam: #b8860b;
+  --color-exam-bg: #fbf3e0;
+  --color-event: #2f6fed;
+  --color-event-bg: #e9f0fe;
+  --color-general: #5c6b7a;
+  --color-general-bg: #eceff2;
+
+  /* type */
+  --font-display: "Space Grotesk", "Segoe UI", sans-serif;
+  --font-body: "Inter", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", monospace;
+
+  /* layout */
+  --radius: 10px;
+  --shadow-card: 0 1px 2px rgba(20, 33, 61, 0.06), 0 1px 1px rgba(20, 33, 61, 0.04);
+  --shadow-card-hover: 0 6px 16px rgba(20, 33, 61, 0.1);
+  --max-width: 1080px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-event);
+  outline-offset: 2px;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
