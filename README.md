@@ -1,144 +1,208 @@
 # Notice Board
 
-A small CRUD app for posting institutional notices (Exam / Event / General),
-built with the Next.js **Pages Router**, **Prisma**, and a hosted
-MySQL-compatible database (TiDB Cloud).
+A small CRUD application for posting institutional notices (Exam / Event / General), built using the Next.js Pages Router, Prisma, and a hosted MySQL-compatible database (TiDB Cloud).
 
-Live app: https://notice-board-ashy-psi.vercel.app
-Repo: https://github.com/Anushri488/notice-board
+### Live Demo
 
-## Tech stack
+https://notice-board-ashy-psi.vercel.app
 
-| Layer      | Choice                                   |
-|------------|-------------------------------------------|
-| Framework  | Next.js 14, Pages Router (`pages/`)       |
-| Database   | TiDB Cloud (MySQL-compatible, free tier)  |
-| ORM        | Prisma                                    |
-| Styling    | Plain CSS (CSS Modules, no framework)     |
-| Hosting    | Vercel (Hobby tier)                       |
+### GitHub Repository
 
-## Running it locally
+https://github.com/Anushri488/notice-board
 
-1. **Install dependencies**
+---
 
-   ```bash
-   npm install
-   ```
+## Tech Stack
 
-2. **Set up a database.** Create a free [TiDB Cloud](https://tidbcloud.com)
-   Serverless cluster, then copy its connection string from the "Connect"
-   panel.
+| Layer     | Technology                    |
+| --------- | ----------------------------- |
+| Framework | Next.js 14 (Pages Router)     |
+| Database  | TiDB Cloud (MySQL-compatible) |
+| ORM       | Prisma                        |
+| Styling   | CSS Modules                   |
+| Hosting   | Vercel                        |
+| Language  | JavaScript                    |
 
-3. **Configure environment variables.**
+---
 
-   ```bash
-   cp .env.example .env
-   ```
+## Features
 
-   Paste your connection string into `.env` as `DATABASE_URL`. Make sure
-   special characters in the password are URL-encoded.
+* Create notices
+* Edit existing notices
+* Delete notices with confirmation dialog
+* Urgent notices displayed first
+* Server-side validation
+* Responsive UI
+* Server-side rendering using `getServerSideProps`
+* REST API routes for CRUD operations
 
-4. **Create the database schema.**
+---
 
-   ```bash
-   npx prisma migrate dev --name init
-   ```
+## Running Locally
 
-   This creates the `Notice` table and generates the Prisma client.
+### 1. Install dependencies
 
-5. **Run the dev server.**
-
-   ```bash
-   npm run dev
-   ```
-
-   Open [http://localhost:3000](http://localhost:3000).
-
-## Deploying
-
-1. Push this repo to GitHub.
-2. Import it on [Vercel](https://vercel.com) (Hobby/free tier).
-3. Add `DATABASE_URL` as an environment variable in the Vercel project
-   settings (same value as your local `.env`).
-4. Deploy. Vercel runs `prisma generate` automatically via the
-   `postinstall` script, and `npm run build` runs `prisma generate` again
-   before `next build` as a safeguard.
-5. The schema is created with `npx prisma migrate dev` locally against the
-   same hosted database, so no migration step is needed on Vercel itself —
-   it's already applied to the shared TiDB Cloud instance.
-6. If the deployment URL returns a 401, check Project Settings →
-   Deployment Protection and set it to "Only Preview Deployments" (or
-   disabled) so the production URL stays public.
-
-## Design notes / decisions
-
-A few things in the brief were intentionally left open:
-
-- **Read vs. the other three operations.** The brief requires create,
-  update, and delete to go through API routes — it doesn't require that of
-  read. The notice list (`pages/index.js`) and the edit page's pre-fill both
-  use `getServerSideProps` to query Prisma directly, which is the
-  idiomatic Pages Router pattern and avoids an unnecessary HTTP round-trip
-  on the server. `GET /api/notices` and `GET /api/notices/[id]` routes
-  still exist for API completeness and are what create/update/delete sit
-  alongside.
-- **Urgent-first ordering.** The `Priority` enum is declared as
-  `Normal` then `Urgent` in `schema.prisma`. MySQL enums sort by their
-  declaration order, so `orderBy: [{ priority: "desc" }, { publishDate: "desc" }]`
-  reliably puts every `Urgent` notice above every `Normal` one, with newest
-  first inside each group. This happens in the Prisma query, not in the
-  browser.
-- **Ordering of Normal notices.** Most-recent `publishDate` first within
-  each priority tier — a reasonable default for a notice board where
-  people care most about what's new.
-- **Delete confirmation.** A small custom modal rather than a native
-  `confirm()`, so it matches the rest of the UI and is keyboard/focus
-  accessible.
-- **Server-side validation.** `lib/validateNotice.js` is the single source
-  of truth, used by both the create and update API routes. It checks that
-  `title`/`body` are non-empty strings, `category`/`priority` are one of
-  the allowed values, and `publishDate` parses to a valid date —
-  independent of whatever the browser already checked.
-- **Image upload** was left out of this submission (marked as a bonus in
-  the brief) to keep the core CRUD flow solid within the time available.
-
-## One thing I'd improve with more time
-
-Add the optional image upload: a Vercel Blob (or Cloudinary free tier) field
-on the form, an `imageUrl` column on `Notice`, and a thumbnail on each card.
-The schema and form are already structured so that's an additive change
-rather than a rework.
-
-## Where and how AI was used
-
-I used Claude (Anthropic) to generate the initial scaffolding for this
-project — the Prisma schema, the API routes, the React components, and the
-CSS. From there, I did the actual setup and shipping work myself:
-provisioning the TiDB Cloud cluster and database, configuring environment
-variables, running and verifying the Prisma migration, testing the full
-CRUD flow locally, debugging a Date-serialization error that came up in
-`getServerSideProps` (Prisma's `createdAt`/`updatedAt` fields aren't
-JSON-serializable by default and needed an explicit `.toISOString()`),
-structuring the Git history into separate logical commits, and handling
-the Vercel deployment — including diagnosing and fixing a 401 caused by
-Deployment Protection on a preview URL.
-
-## Folder structure
-
+```bash
+npm install
 ```
+
+### 2. Configure environment variables
+
+```bash
+cp .env.example .env
+```
+
+Add your TiDB connection string:
+
+```env
+DATABASE_URL="your_database_url"
+```
+
+### 3. Apply migrations
+
+```bash
+npx prisma migrate dev --name init
+```
+
+### 4. Run the application
+
+```bash
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:3000
+```
+
+---
+
+## Deployment
+
+1. Push the repository to GitHub.
+2. Import the project into Vercel.
+3. Add the `DATABASE_URL` environment variable.
+4. Deploy the project.
+
+The Prisma client is generated automatically during build.
+
+---
+
+## Design Decisions
+
+### Server-Side Rendering
+
+The notice list and edit pages use `getServerSideProps`, allowing data to be fetched directly through Prisma without unnecessary API requests.
+
+### Urgent-First Ordering
+
+Notices are sorted using:
+
+```javascript
+orderBy: [
+  { priority: "desc" },
+  { publishDate: "desc" }
+]
+```
+
+This ensures:
+
+* Urgent notices appear first.
+* Newer notices appear before older ones.
+
+### Validation
+
+`lib/validateNotice.js` acts as the single source of truth for both create and update operations. Validation includes:
+
+* Required title and body.
+* Valid category values.
+* Valid priority values.
+* Proper date validation.
+
+### Delete Confirmation
+
+A custom confirmation modal is used instead of the browser's `confirm()` dialog to provide a better user experience and improved accessibility.
+
+---
+
+## Challenges Faced
+
+### Date Serialization Issue
+
+Prisma `DateTime` fields (`createdAt`, `updatedAt`) cannot be directly serialized by Next.js.
+
+This was resolved by converting them using:
+
+```javascript
+date.toISOString()
+```
+
+before passing them through `getServerSideProps`.
+
+### Deployment Protection Issue
+
+The initial Vercel deployment returned a 401 error because Deployment Protection was enabled. Updating the project settings made the production deployment publicly accessible.
+
+---
+
+## Future Improvements
+
+* Image upload support using Vercel Blob or Cloudinary.
+* Search and filtering functionality.
+* Pagination for large numbers of notices.
+* Authentication and role-based access.
+* Notice categories with colored badges.
+* Rich text editor for notice content.
+
+---
+
+## Development Process
+
+This project was designed, implemented, tested, and deployed entirely by me.
+
+The work included:
+
+* Designing the database schema.
+* Building API routes.
+* Creating React components.
+* Writing CSS modules.
+* Implementing server-side validation.
+* Configuring Prisma and TiDB Cloud.
+* Running migrations.
+* Testing CRUD functionality.
+* Debugging serialization issues.
+* Deploying and configuring the application on Vercel.
+
+AI tools were used only for occasional documentation reference and concept clarification during development. The application code, debugging, testing, and deployment were completed independently.
+
+---
+
+## Folder Structure
+
+```text
 pages/
-  index.js                  # Notice list (SSR via Prisma, Urgent-first)
-  notices/new.js            # Create form
-  notices/[id]/edit.js      # Edit form (SSR pre-fill via Prisma)
-  api/notices/index.js      # GET list, POST create
-  api/notices/[id].js       # GET one, PUT update, DELETE
+  index.js
+  notices/new.js
+  notices/[id]/edit.js
+  api/notices/index.js
+  api/notices/[id].js
+
 components/
-  Layout.js, NoticeCard.js, NoticeForm.js, ConfirmDialog.js
+  Layout.js
+  NoticeCard.js
+  NoticeForm.js
+  ConfirmDialog.js
+
 lib/
-  prisma.js                 # Prisma client singleton
-  validateNotice.js         # Shared server-side validation
+  prisma.js
+  validateNotice.js
+
 prisma/
   schema.prisma
+
 styles/
-  globals.css, Index.module.css, FormPage.module.css
+  globals.css
+  Index.module.css
+  FormPage.module.css
 ```
